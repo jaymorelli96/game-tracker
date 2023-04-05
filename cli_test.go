@@ -11,27 +11,13 @@ import (
 
 var dummyBlindAlerter = &poker.SpyBlindAlerter{}
 var dummyPlayerStore = &poker.StubPlayerStore{}
-var dummyStdIn = &bytes.Buffer{}
 var dummyStdOut = &bytes.Buffer{}
-
-type GameSpy struct {
-	StartCalledWith  int
-	FinishCalledWith string
-}
-
-func (g *GameSpy) Start(numberOfPlayers int) {
-	g.StartCalledWith = numberOfPlayers
-}
-
-func (g *GameSpy) Finish(winner string) {
-	g.FinishCalledWith = winner
-}
 
 func TestCLI(t *testing.T) {
 	t.Run("prompts the user to enter the number of players and starts the game", func(t *testing.T) {
 		stdout := &bytes.Buffer{}
 		in := strings.NewReader("10\n")
-		game := &GameSpy{}
+		game := &poker.GameSpy{}
 
 		cli := poker.NewCLI(in, stdout, game)
 		cli.PlayPoker()
@@ -50,7 +36,7 @@ func TestCLI(t *testing.T) {
 
 	t.Run("finish game with 'Jay' as winner", func(t *testing.T) {
 		in := strings.NewReader("1\nJay wins\n")
-		game := &GameSpy{}
+		game := &poker.GameSpy{}
 		cli := poker.NewCLI(in, dummyStdOut, game)
 
 		cli.PlayPoker()
@@ -62,7 +48,7 @@ func TestCLI(t *testing.T) {
 
 	t.Run("record 'John' win from user input", func(t *testing.T) {
 		in := strings.NewReader("1\nJohn wins\n")
-		game := &GameSpy{}
+		game := &poker.GameSpy{}
 		cli := poker.NewCLI(in, dummyStdOut, game)
 
 		cli.PlayPoker()
